@@ -375,7 +375,8 @@ if ! ${NO_REPORTS}; then
 		-c "${TOPDIR}"/src/GEISA-LEE-tests/GEISA-LEE-matrix.csv \
 		-c "${TOPDIR}"/src/GEISA-API-tests/GEISA-API-matrix.csv \
 		--allow_absent \
-		--show_failed_cdata && \
+		--show_failed_cdata \
+		--show_skip_reasons && \
 	mv "${TOPDIR}"/src/test-report-pdf/test-report.pdf "${TOPDIR}"/reports/geisa-conformance-report.pdf || {
 		echo -e "${RED}Error:${ENDCOLOR} Failed to create PDF report"
 		exit 1
