@@ -25,6 +25,22 @@ source "${TOPDIR}"/src/launch_glee_conformance_tests_ssh.sh
 source "${TOPDIR}"/src/launch_gapi_conformance_tests.sh
 source "${TOPDIR}"/src/launch_gadm_conformance_tests.sh
 
+# Print the details the specification relies on. The board script is copied
+# over scp and run with sh, so the board needs nothing but a shell.
+print_platform_details() {
+	local board_ip="${BOARD_IP}" board_user="${BOARD_USER}" board_password="${BOARD_PASSWORD}" details
+	SCP "${TOPDIR}/src/platform-details.sh" \
+		"${board_user}@[${board_ip}]:/tmp/platform-details.sh" 1>/dev/null 2>&1 &&
+		details="$(SSH "sh /tmp/platform-details.sh")"
+	details="${details//$'\r'/}"
+	if [[ -z ${details} ]]; then
+		echo -e "${ORANGE}Warning:${ENDCOLOR} Failed to read the platform details"
+		return
+	fi
+	echo "Platform details:"
+	echo "  ${details//$'\n'/$'\n'  }"
+}
+
 trap '
 	echo -e "${RED}Error:${ENDCOLOR} Test run interrupted."
 	echo -e "${ORANGE}Warning:${ENDCOLOR} Test artifacts may still be installed on the board."
@@ -271,6 +287,11 @@ fi
 if ! ${NO_REPORTS}; then
 	echo "Cleaning previous reports"
 	rm -rf "${TOPDIR}"/reports/*
+fi
+
+# Over serial, the serial launcher prints them after login.
+if [[ -n ${BOARD_IP} ]]; then
+	print_platform_details
 fi
 
 if [[ -z ${NO_GLEE_TESTS} ]]; then
