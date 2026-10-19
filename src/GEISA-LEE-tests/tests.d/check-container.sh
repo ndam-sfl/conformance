@@ -730,6 +730,15 @@ has_container_network_grant() {
 }
 
 #######################################
+# Succeed when the tests could set up the given network limit, acl or volume,
+# else tell why not.
+#######################################
+has_container_network_policy() {
+    has_container_network_grant || return 1
+    container_backend has-network-policy "$1"
+}
+
+#######################################
 # Send a marker through each container's logging interface and find it on host.
 #######################################
 check_container_logging() {

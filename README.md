@@ -24,6 +24,12 @@ The automatic test launcher requires the following requirements:
   * With serial:
      - Serial connection to the board
      - lrzsz package
+  * For the network tests, when the application is granted network access:
+     - nftables, or iptables if nftables is not installed. Without either, the
+       network access control list and daily volume tests are skipped.
+     - Kernel support for byte quotas: `CONFIG_NFT_QUOTA` with nftables, or
+       `CONFIG_NETFILTER_XT_MATCH_QUOTA` with iptables. Without it, the daily
+       volume test is skipped.
 * On the host:
   * With ssh: OpenSSH client uses the default SSH key first. sshpass is required when no usable key is found and password authentication is needed (On Ubuntu, install with `sudo apt install sshpass`)
   * With serial:
